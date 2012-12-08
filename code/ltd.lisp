@@ -75,6 +75,10 @@
                          (converting-bind ,(args cl) (args exp) 
                            ,@(when (find-anywhere 'ignore (args cl))
                                    '((declare (ignore ignore))))
+                           ;; Don't warn for ARGS added above in
+                           ;; coercion to canonical form.
+                           ,@(when (find-anywhere 'args (args cl))
+                                   '((declare (ignore args))))
                            ,dylan)))
                        ,@(if (or (dotted? cl) (find-anywhere '&opt cl))
                              `((t (cvt-erroneous ; ??? could do better
