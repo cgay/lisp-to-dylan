@@ -151,4 +151,6 @@
                    (push `(,v (,(funcall converter v) ,var)) vars))
                   (t (push `(,v (,(funcall converter v) (pop ,var))) vars)))
             (if (atom form) (RETURN) (pop form))))
-    `(let* ((,var ,exp) ,@(nreverse vars)) ,@body)))
+    `(let* ((,var ,exp) ,@(nreverse vars))
+       (declare (ignorable ,var))
+       ,@body)))
