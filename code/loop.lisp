@@ -74,7 +74,7 @@
 	    #'(lambda (key)
 		`((gethash ,(string key) *loop-fns*)
 		  #'(lambda (,l ,key-var ,next-exp) 
-		      (declare (ignore ,key-var))
+		      (declare (ignorable ,key-var))
 		      ,@body)))
 	    (mklist keys))))
 

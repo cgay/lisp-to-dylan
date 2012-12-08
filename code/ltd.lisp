@@ -74,7 +74,8 @@
 			    (converting-bind ,(args cl) (args exp) 
 			      ,@(when (find-anywhere 'ignore (args cl))
 				  '((declare (ignore ignore))))
-					     ,dylan)))
+                              (declare (ignorable args))
+                              ,dylan)))
                           ,@(if (or (dotted? cl) (find-anywhere '&opt cl))
                                 `((t (cvt-erroneous ; ??? could do better
                                       exp (second/ exp)

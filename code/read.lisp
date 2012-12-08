@@ -38,7 +38,6 @@
 
 (defun ltd-read-list (stream char)
   ;; Check for () and record positions
-  (declare (ignore char))
   (case (peek-char t stream nil)
     (#\) (read-char stream) '|()|)
     (otherwise (record-file-positions
