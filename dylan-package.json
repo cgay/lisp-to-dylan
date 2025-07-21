@@ -1,0 +1,10 @@
+{
+    "dependencies": [ ],
+    "dev-dependencies": [ ],
+    "description": "Common Lisp to Dylan converter, by Peter Norvig",
+    "name": "lisp-to-dylan",
+    "version": "0.1.0",
+    "url": "https://github.com/dylan-lang/lisp-to-dylan",
+    "keywords": [ ],
+    "contact": "https://github.com/dylan-lang/lisp-to-dylan/issues",
+}
