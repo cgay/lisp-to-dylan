@@ -26,7 +26,6 @@
          `(type-union ,@(mapcar #'cvt-type (args spec))))
         ((starts-with spec 'integer)
          `(limited <integer>
-                   ;; Or is it :from and :to ??
                ,@(when (second/ spec) `(:min ,(second/ spec)))
                ,@(when (third spec) `(:max ,(third spec)))))
         ((starts-with spec 'member)
@@ -43,7 +42,7 @@
   ;; Converts parameterless types only
   (safe-destructuring-bind (name arglist body1 . body) (args exp)
     (if (and (false? arglist) (starts-with 'quote (strip body1)) (false? body))
-        `(define-constant ,(cvt-type name) 
+        `(define-constant ,(cvt-type name)
            ,(cvt-type-exp (second/ (strip body1))))
         (cvt-erroneous exp '|\#f| "Can't handle complex deftypes."))))
 
@@ -51,7 +50,7 @@
 
 (defun cvt-defun (exp)
   "Convert a defun or basic defmethod into a define-method."
-  `(,(get-option :defun-as) ,(second/ exp) 
+  `(,(get-option :defun-as) ,(second/ exp)
      ,@(cvt-parms-and-body (nthcdr 2 exp) (second/ exp))))
 
 (defun cvt-lambda (exp &optional)
@@ -171,7 +170,7 @@
                               (add-type-declaration
                                (binding-var b) declarations))
                           bindings))
-              (values ,@(mapcar #'(lambda (b) (cvt-exp (binding-val b))) 
+              (values ,@(mapcar #'(lambda (b) (cvt-exp (binding-val b)))
                                 bindings))
               ,@(cvt-body body)))))))
 
@@ -179,7 +178,7 @@
   (cvt-erroneous exp (cvt-let exp) "COMPILER-LET converted to LET"))
 
 (defun cvt-let* (exp)
-  "Convert let* to nested lets." 
+  "Convert let* to nested lets."
   (safe-destructuring-bind (vars . body) (rest/ exp)
     (move-comment
      vars
@@ -239,7 +238,7 @@
   ;; This is important, because with-slots macroexpands into symbol-macrolet.
   ;; Unfortunately, symbol-macrolet is a special form, not a macro, so we have
   ;; to expand it ourselves.  We do a half-way job ??, converting ALL symbols,
-  ;; even ones that are not in an evaluation context.  So you lose on things 
+  ;; even ones that are not in an evaluation context.  So you lose on things
   ;; like (symbol-macrolet ((x 1)) (list 'x (let ((x 2)) x))), but do fine on
   ;; e.g. (symbol-macrolet ((x (slot-value y 'x))) (setf x (* x 2)))
   (safe-destructuring-bind (bindings . body) (args exp)
@@ -369,13 +368,13 @@
            nil)
           (t (or (find-return name (first/ body) name2)
                  (find-return name (rest/ body) name2))))))
-  
+
 (defun cvt-do (exp)
   ;; Need to fix this for do*
   (safe-destructuring-bind (vars endtest-and-values . body) (args exp)
     (setq vars (if (eq vars '|()|) '() (mapcar #'mklist vars)))
     (if (eq endtest-and-values '|()|) (setf endtest-and-values '()))
-    (let* ((endtest (cvt-exp (move-comment endtest-and-values 
+    (let* ((endtest (cvt-exp (move-comment endtest-and-values
                                            (first/ endtest-and-values))))
            (values (cvt-exps (rest/ endtest-and-values)))
            (bindings (mapcar #'(lambda (binding)
@@ -468,8 +467,8 @@
   "Convert back to normal lisp: eliminate comments and |()|."
   (cond ((comment? exp) (to-normal-lisp (com-code exp)))
         ((eq exp '|()|) '())
-        ((consp exp) (recons (to-normal-lisp (car exp)) 
-                             (to-normal-lisp (cdr exp)) 
+        ((consp exp) (recons (to-normal-lisp (car exp))
+                             (to-normal-lisp (cdr exp))
                              exp))
         ((stringp exp) exp)
         ((vectorp exp) (coerce (map-into exp #'to-normal-lisp exp) 'vector))
@@ -499,7 +498,7 @@
 (defun cvt-defpackage (exp)
   (must-be-call
    (safe-destructuring-bind (name . options) (rest/ exp)
-     `(define-module ,name 
+     `(define-module ,name
         ,@(loop for option in options
                 when (starts-with option ':use)
                 collect `(:clause use ,@(rest/ option))
@@ -540,7 +539,7 @@
 
 (defun wrap-bindings (bindings code)
   ;; Wrap code with LETs for the (var val) pairs in bindings.
-  (loop for (var val) in bindings 
+  (loop for (var val) in bindings
         do (setf code `(let ,var ,val ,code)))
   (if bindings
       `(begin ,code)
@@ -564,11 +563,11 @@
           `(reduce1 ,function ,sequence)))))
 
 (defun cvt-if-not (exp)
-  ;; Invert the test in a sequence-function-IF-NOT 
+  ;; Invert the test in a sequence-function-IF-NOT
   (if (call? exp)
       (let ((name (string (first/ exp)))
             (pos (case (op exp)
-                   ((subst-if-not nsubst-if-not substitutue-if-not 
+                   ((subst-if-not nsubst-if-not substitutue-if-not
                                   nsubstitute-if-not)
                     2)
                    (otherwise 1))))
@@ -616,7 +615,7 @@
                    (t test)))))
       (if (eq code '==) nil `(:test ,code)))))
 
-(defun mkpred (keys pred) 
+(defun mkpred (keys pred)
   ;; Make a binary comparison predicate, possibly using :key argument from keys
   ;; pred is already converted to Dylan; keys are not.
   (when (listp keys)
@@ -645,7 +644,7 @@
   (if (and (consp eofs) (not (null (first/ eofs))))
       `(:on-end-of-stream ,(cvt-exp (second/ eofs)))
       nil))
-      
+
 ;;;; CLtL2 CH 16: HASH TABLES
 
 (defun cvt-make-hash-table (exp)
@@ -694,11 +693,11 @@
                         (rest/ (strip name-and-options))))
            (supers (mapcar #'cvt-type (rest/ (assoc/ :include options))))
            (comment nil))
-      (when (eq slots '|()|) 
+      (when (eq slots '|()|)
         (setq slots '()))
       (when (stringp (first/ slots))
         (setq comment (pop slots)))
-      (let ((code `(define-class ,(cvt-type name) 
+      (let ((code `(define-class ,(cvt-type name)
                                  (:list ,@(or supers '(<object>)))
                                  ,@(cvt-defstruct-slots slots name options))))
         (if comment
@@ -712,9 +711,9 @@
   (let* ((option (assoc/ :conc-name options))
          (conc-name (if (consp (strip option)) (second/ option)
                       (mksymbol struct-name '-))))
-    (flet ((convert-defstruct-slot 
+    (flet ((convert-defstruct-slot
             (slot)
-            (move-comment 
+            (move-comment
              slot
              (let* ((name (if (listp slot) (first/ slot) slot))
                     (new-name (mksymbol conc-name name))
@@ -771,7 +770,7 @@
         (cond ((null unhandled) result)
               ((get-option :macroexpand-hard-format-strings)
                (cvt-exp (macroexpand `(formatter ,control))))
-              (t (cvt-erroneous control result 
+              (t (cvt-erroneous control result
                                 "Unhandled format characters: ~{~~~C~^,~}"
                                 (nreverse unhandled)))))))
 
@@ -783,14 +782,14 @@
           (if n
               (append (subseq keys 0 n) (subseq keys (+ n 2)))
             keys))))
-        
+
 
 ;;;; CLtL2 CH 23: FILE SYSTEM INTERFACE
 
 (defun cvt-with-open-file (exp)
   (must-be-call
    (destructuring-bind ((var file . options) . body) (args exp)
-     `(with-open-file (= ,(cvt-exp var) (:args ,(cvt-exp file) 
+     `(with-open-file (= ,(cvt-exp var) (:args ,(cvt-exp file)
                                                ,@(cvt-exps options)))
        ,@(cvt-body body)))))
 
@@ -808,7 +807,7 @@
       (setf supers (ecase (op exp)
                      (defclass '(t))
                      (define-condition '(condition)))))
-    `(define-class ,(cvt-type name) 
+    `(define-class ,(cvt-type name)
        (:list ,@(mapcar #'cvt-type (or supers '(t))))
                    ,@(cvt-defclass-slots slots options))))
 
@@ -867,7 +866,7 @@
 (defun cvt-with-slots (exp)
   ;; Just expand macro, except if the argument is atomic, avoid local var.
   (if (atom (strip (third exp)))
-      (cvt-exp `(symbol-macrolet 
+      (cvt-exp `(symbol-macrolet
                     ,(mapcar #'(lambda (v)
                                   `(,v (slot-value ,(strip (third exp)) ',v)))
                               (strip (second/ exp)))

@@ -92,7 +92,7 @@
       (let ((*read-suppress* t))
         (read stream nil nil) ;; Ignore the next exp
         (collect-comments stream nil 0 comments)))))
-        
+
 
 (defun ltd-read-hash-comment (stream)
   (setf (fill-pointer *buffer*) 0)

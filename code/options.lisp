@@ -74,7 +74,7 @@
       "Should we print 'end method f' [rather than just 'end method']")
      (:end-construct t (or (member t) list)
       "A list of constructs, e.g. (block class), for which we print 'end block'
-[rather than just 'end'], or T to cover every construct") 
+[rather than just 'end'], or T to cover every construct")
      ))
 
 (defparameter *options* (copy-tree *default-options*))
@@ -85,7 +85,7 @@
   ;; (1) specify a default with, e.g., :default *old-options*
   ;; (2) override values with, e.g., :unless-as 'if :tab-stop 4
   ;; (3) set all values to "ask user" with :? t
-  (setf *options* (copy-tree default)) 
+  (setf *options* (copy-tree default))
   (when ?
     (dolist (option *options*)
       (setf (option-value option) :?)))

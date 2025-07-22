@@ -13,8 +13,8 @@
 (defun rest/ (exp) (rest (strip-nil exp)))
 (defun second/ (exp) (second (strip-nil exp)))
 (defun null/ (exp) (null (strip-nil exp)))
-(defun assoc/ (item a-list) 
-  (find (strip item) (strip a-list) 
+(defun assoc/ (item a-list)
+  (find (strip item) (strip a-list)
         :key #'(lambda (x) (first-atom (strip x)))))
 
 (defun strip-nil (exp)
@@ -34,17 +34,17 @@
   ;; binding (in Dylan) any variables if they have non-trivial values
   (assert (symbolp var))
   (let ((temp (gensym (string var))))
-  `(if (or (constantp ,var) (atom ,var))
-       (progn ,@body)
-       (list 'let ',temp ,var
-             (let ((,var ',temp)) ,@body)))))
+    `(if (or (constantp ,var) (atom ,var))
+         (progn ,@body)
+         (list 'let ',temp ,var
+               (let ((,var ',temp)) ,@body)))))
 
 (defun maybe-begin (args)
   "Take a list of args (a body) and wrap a BEGIN around it if necessary."
   (case (length args)
     (0  '|\#f|)
     (1 (if (starts-with (first/ args) 'let) `(begin ,@args) (first/ args)))
-    (t `(begin ,@args))))  
+    (t `(begin ,@args))))
 
 ;;;; GENERAL LISP UTILITY FUNCTIONS
 
@@ -136,12 +136,12 @@
                      (if (null/ x) '*standard-output* (cvt-exp x))))
          (otherwise
           (if (ends-with (string arg) #\*)
-              'cvt-exps 
+              'cvt-exps
               'cvt-exp))))))
 
 (defun *ing-bind-fn (form exp body converter)
   (let ((var (gensym))
-         (vars nil))
+        (vars nil))
     (loop (let ((v (if (atom form) form (first form))))
             (cond ((null/ form) (RETURN))
                   ((member v '(&opt &optional)) nil)

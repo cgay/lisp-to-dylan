@@ -7,7 +7,7 @@
 (defun load-ltd (&key (compile nil))
   (with-compilation-unit ()
       (mapc #'(lambda (file) (load (if compile (compile-file file) file)))
-            '("package.lisp" "misc.lisp" "options.lisp" "read.lisp" "dpp.lisp"  
+            '("package.lisp" "misc.lisp" "options.lisp" "read.lisp" "dpp.lisp"
               "ltd.lisp" "ltd-table.lisp" "loop.lisp" "tables.lisp"))))
 
 (defun test-ltd ()
@@ -19,7 +19,5 @@
 
 #+LispWorks
 (defsystem ltd (:package user)
-  :members 
+  :members
   ("misc" "options" "read" "dpp" "ltd" "ltd-table" "loop" "tables"))
-              
-  

@@ -3,8 +3,8 @@
 
 ;;;; CVT-LOOP and friends
 
-;;; Code taken from Norvig's PAIP, modified to generate Dylan instead of 
-;;; Lisp, and augmented to handle more loop clauses, and to handle loop 
+;;; Code taken from Norvig's PAIP, modified to generate Dylan instead of
+;;; Lisp, and augmented to handle more loop clauses, and to handle loop
 ;;; symbols in different packages.
 
 (defstruct loops ;; LOOPS stands for LOOP Structure (can't use LOOP).
@@ -73,7 +73,7 @@
   `(setf ,@(mapcan
             #'(lambda (key)
                 `((gethash ,(string key) *loop-fns*)
-                  #'(lambda (,l ,key-var ,next-exp) 
+                  #'(lambda (,l ,key-var ,next-exp)
                       (declare (ignorable ,key-var))
                       ,@body)))
             (mklist keys))))
@@ -86,11 +86,11 @@
 (defun handle-loop-finish (exp)
   (if (and (starts-with exp 'macrolet) (length=1 (second/ exp))
            (eq 'loop-finish (first/ (first/ (second/ exp)))))
-      (subst (third (first/ (second/ exp))) '(loop-finish) 
+      (subst (third (first/ (second/ exp))) '(loop-finish)
              `(progn ,@(cddr exp))
              :test #'equal)
       exp))
-      
+
 (defun parse-loop-key (l &rest keys)
   "If the next exp in L is one of keys, pop it and return true."
   (when (apply #'loop=? (first/ (loops-exps l)) keys)
@@ -110,13 +110,13 @@
   (setq var (parse-var l var))
   (cond
    ((parse-loop-key l "IN" "ACROSS")
-    (push `(:for-clause ,var in ,(cvt-exp (pop (loops-exps l)))) 
+    (push `(:for-clause ,var in ,(cvt-exp (pop (loops-exps l))))
           (loops-fors l)))
    ((parse-loop-key l "ON")
     (let ((by (if (parse-loop-key l "BY")
                   (cvt-exp (pop (loops-exps l)))
                 'tail)))
-      (push `(:for-clause ,var = ,(cvt-exp (pop (loops-exps l))) 
+      (push `(:for-clause ,var = ,(cvt-exp (pop (loops-exps l)))
                           then (,by ,var))
             (loops-fors l))
       (push `(:for-clause :until (empty? ,var)) (loops-fors l))))
@@ -126,7 +126,7 @@
            (push `(:for-clause ,var in ,(cvt-exp (pop (loops-exps l))))
                  (loops-fors l)))
           ((parse-loop-key l "HASH-KEY" "HASH-KEYS")
-           (push `(:for-clause ,var in 
+           (push `(:for-clause ,var in
                                (key-sequence ,(cvt-exp (pop (loops-exps l)))))
                  (loops-fors l)))
           (t (loop-error l 'for var))))
@@ -173,15 +173,15 @@
     (push `(:for-clause ,var from ,start ,@to ,@by) (loops-fors l))))
 
 (def-loop repeat (l times)
-  "(LOOP REPEAT n ...) does loop body n times" 
+  "(LOOP REPEAT n ...) does loop body n times"
   (push `(:for-clause _ from 1 to ,(cvt-exp times)) (loops-fors l)))
 
-;;;; Loop Clauses 26.7 End-Test Control 
+;;;; Loop Clauses 26.7 End-Test Control
 
-(def-loop while (l test) 
+(def-loop while (l test)
   (push `(:for-clause :while ,(cvt-exp test)) (loops-fors l)))
 
-(def-loop until (l test) 
+(def-loop until (l test)
   (push `(:for-clause :until ,(cvt-exp test)) (loops-fors l)))
 
 (def-loop always (l test)
@@ -192,7 +192,7 @@
   (setf (loops-result l) 't)
   (add-body l `(if ,test (return 'nil))))
 
-(def-loop thereis (l test) 
+(def-loop thereis (l test)
   (setf (loops-result l) 'nil)
   (add-var l '_ nil)
   (add-body l `(if (setq _ ,test (return _)))))
@@ -202,18 +202,18 @@
 (def-loop (collect collecting) (l exp)
   (accumulate l exp '(make <deque>) '(push-last INTO VAL)))
 
-(def-loop (nconc nconcing) (l exp) 
+(def-loop (nconc nconcing) (l exp)
   (accumulate l exp '|()| '(setq INTO (nconc INTO VAL))))
-(def-loop (append appending) (l exp) 
+(def-loop (append appending) (l exp)
   (accumulate l exp '|()| '(setq INTO (append INTO VAL))))
 
 (def-loop (count counting) (l exp) (accumulate l exp 0 '(if VAL (incf INTO))))
 
 (def-loop (sum summing) (l exp)  (accumulate l exp 0 '(incf INTO VAL)))
 
-(def-loop (maximize maximizing) (l exp) 
+(def-loop (maximize maximizing) (l exp)
   (accumulate l exp 'nil '(setq INTO (if INTO (max INTO VAL) VAL))))
-(def-loop (minimize minimizing) (l exp)  
+(def-loop (minimize minimizing) (l exp)
   (accumulate l exp 'nil '(setq INTO (if INTO (min INTO VAL) VAL))))
 
 (defun accumulate (l val init form)
@@ -230,7 +230,7 @@
 (def-loop with (l var)
   (let ((vars nil) (vals nil))
     (push var (loops-exps l))
-    (loop 
+    (loop
         (push (parse-var l) vars)
       (push (if (parse-loop-key l "=") (pop (loops-exps l)) '|\#f|) vals)
       (unless (parse-loop-key l "AND") (RETURN)))
@@ -240,14 +240,14 @@
 
 (defun parse-var (l &optional given-var)
   "Parse and return var [type-spec]" ; See CLtL2 p. 743
-  (let ((var (or given-var 
+  (let ((var (or given-var
                  (if (symbolp (first/ (loops-exps l))) (pop (loops-exps l))))))
     (if (or (parse-loop-key l "OF-TYPE")
             (every #'numeric-type? (mklist (first (loops-exps l)))))
         `(|::| ,var ,(cvt-type (pop (loops-exps l))))
       var)))
 
-(defun numeric-type? (x) 
+(defun numeric-type? (x)
   (member (strip x) '(fixnum float t nil)))
 
 ;;;; 26.10 Conditional Execution
@@ -256,7 +256,7 @@
 ;;; loop structure, and make sure that add-body puts code into these
 ;;; when appropriate.
 
-(defun add-body (l exp) 
+(defun add-body (l exp)
   (if (loops-conditionals l)
       (let ((target  (first (loops-conditionals l))))
         ;; Target is of form (if ... (progn ...)),
@@ -265,10 +265,10 @@
         (nconc1 (last1 target) exp))
     (push exp (loops-body l))))
 
-(def-loop (when if unless) (l test key) 
+(def-loop (when if unless) (l test key)
   ;; WHEN expr clauses [ELSE clauses] [END]
   ;; clauses -> clause {AND clause}*
-  (let ((target (list 'if 
+  (let ((target (list 'if
                       (if (loop=? key "UNLESS") `(not ,test) test)
                       (list 'progn))))
     (add-body l target)
@@ -279,7 +279,7 @@
             (nconc1 (first (loops-conditionals l)) (list 'progn)))
       (parse-clauses l))
     (pop (loops-conditionals l))
-    (parse-loop-key l "END")))   
+    (parse-loop-key l "END")))
 
 (defun parse-clauses (l)
   ;; Conditional clauses are either:
@@ -302,7 +302,7 @@
   (loop (if (symbolp (first/ (loops-exps l))) (RETURN))
         (add-body l (pop (loops-exps l)))))
 
-(def-loop return (l exp) 
+(def-loop return (l exp)
   (add-body l `(return ,exp)))
 
 ;;;; 26.12 Miscellaneous Features

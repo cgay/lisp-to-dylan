@@ -10,10 +10,10 @@
         (*package* *package*))
     (dolist (file (expand-files files))
       (with-open-file (out (merge-pathnames output file) :direction :output
-                           :if-exists :supersede)
+                                                         :if-exists :supersede)
         (with-open-file (in file :direction :input)
           (format t "Converting ~A~%" file)
-          (restart-case 
+          (restart-case
               (loop until (eq *eof* (ltd-exp in out)))
             (nil () :report (lambda (s) (format s "Skip file ~A" file)))))))
     (report-unimplemented-functions)))
@@ -55,39 +55,39 @@
   ;; The function will be passed EXP, the complete expression to be converted.
   ;; This is either of the form (f x y z) or #'f
   (when (symbolp cl)
-    (setf cl `(,cl . args)))          ; Coerce to canonical form
+    (setf cl `(,cl . args)))            ; Coerce to canonical form
   `(progn
      (setf (get ',(op cl) 'cvt-fn)
            #'(lambda (exp)
                ,(cond
-                 ((symbolp dylan)
-                  `(if (call? exp)
-                       (cons ',dylan (cvt-exps (args exp)))
-                       ',dylan))
-                 ((starts-with dylan 'function)
-                  `(,(second/ dylan) exp))
-                 ((starts-with dylan 'cl?)
-                  `(encapsulate-let
-                    (converting-bind ,(args cl) (args exp) ,dylan)))
-                 (t `(cond
-                       ((call? exp)
-                        (encapsulate-let
-                         (converting-bind ,(args cl) (args exp) 
-                           ,@(when (find-anywhere 'ignore (args cl))
-                                   '((declare (ignore ignore))))
-                           ;; Don't warn for ARGS added above in
-                           ;; coercion to canonical form.
-                           ,@(when (find-anywhere 'args (args cl))
-                                   '((declare (ignore args))))
-                           ,dylan)))
-                       ,@(if (or (dotted? cl) (find-anywhere '&opt cl))
-                             `((t (cvt-erroneous ; ??? could do better
-                                   exp (second/ exp)
-                                   "Can't convert complex function ~A." 
-                                   (second/ exp))))
-                             `((t (let ((dylan-args '(:args ,@(args cl)))
-                                        (dylan-body (cvt-exp ',cl)))
-                                    (list 'method dylan-args dylan-body))))))))))
+                  ((symbolp dylan)
+                   `(if (call? exp)
+                        (cons ',dylan (cvt-exps (args exp)))
+                        ',dylan))
+                  ((starts-with dylan 'function)
+                   `(,(second/ dylan) exp))
+                  ((starts-with dylan 'cl?)
+                   `(encapsulate-let
+                     (converting-bind ,(args cl) (args exp) ,dylan)))
+                  (t `(cond
+                        ((call? exp)
+                         (encapsulate-let
+                          (converting-bind ,(args cl) (args exp)
+                            ,@(when (find-anywhere 'ignore (args cl))
+                                '((declare (ignore ignore))))
+                            ;; Don't warn for ARGS added above in
+                            ;; coercion to canonical form.
+                            ,@(when (find-anywhere 'args (args cl))
+                                '((declare (ignore args))))
+                            ,dylan)))
+                        ,@(if (or (dotted? cl) (find-anywhere '&opt cl))
+                              `((t (cvt-erroneous ; ??? could do better
+                                    exp (second/ exp)
+                                    "Can't convert complex function ~A."
+                                    (second/ exp))))
+                              `((t (let ((dylan-args '(:args ,@(args cl)))
+                                         (dylan-body (cvt-exp ',cl)))
+                                     (list 'method dylan-args dylan-body))))))))))
      ',(first-atom cl)))
 
 (defmacro ltd-unimplemented-functions (&rest fns)
@@ -96,7 +96,7 @@
                 (case (get-cvt-fn fn)
                   ((nil) (setf (get fn 'cvt-fn) 'not-yet-implemented))
                   ((not-yet-implemented))
-                  (t (warn "~A is already implemented!" fn)))) 
+                  (t (warn "~A is already implemented!" fn))))
         ',fns))
 
 (defmacro ltd-unimplemented-types (&rest types)
@@ -125,7 +125,7 @@
     (maphash #'(lambda (k v) (push (list v k) result))
              *unimplemented*)
     (format t "~%Counts of unimplmented functions:~%")
-    (loop for (n fn) in (sort result #'> :key #'first) 
+    (loop for (n fn) in (sort result #'> :key #'first)
           do (format t "~4D ~A~%" n fn))
     (clrhash *unimplemented*)))
 
@@ -213,7 +213,7 @@
   (if (starts-with exp 'let)
       `(begin ,exp)
       exp))
-          
+
 ;;;; MISC
 
 (defun add-type-declaration (variable declarations)

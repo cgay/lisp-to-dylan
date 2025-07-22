@@ -89,7 +89,7 @@
 
 (ltd-fn (typep x type)           `(instance? ,x ,type))
 (ltd-fn (subtypep type class)    `(subclass? ,type ,class))
-(ltd-fn  null                    empty?) 
+(ltd-fn  null                    empty?)
 (ltd-fn (symbolp x)              `(instance? ,x <symbol>))
 (ltd-fn (atom x)                 `(not (instance? ,x <list>)))
 (ltd-fn (consp x)                `(instance? ,x <pair>))
@@ -194,7 +194,7 @@
 (ltd-fn (locally . body)         (maybe-begin body))
 (ltd-fn  proclaim                '|\#f|)
 (ltd-fn  declaim                 '|\#f|)
-(ltd-fn (the type x)             (progn type x)) 
+(ltd-fn (the type x)             (progn type x))
 
 ;;;; CLtL2 CH 10: SYMBOLS
 
@@ -227,8 +227,8 @@
 (ltd-fn (/= . arg*)              (cvt-to-binary-compares `(~= . ,arg*)))
 (ltd-fn  <                       #'cvt-to-binary-compares)
 (ltd-fn  >                       #'cvt-to-binary-compares)
-(ltd-fn  <=                      #'cvt-to-binary-compares) 
-(ltd-fn  >=                      #'cvt-to-binary-compares) 
+(ltd-fn  <=                      #'cvt-to-binary-compares)
+(ltd-fn  >=                      #'cvt-to-binary-compares)
 (ltd-fn  max                     max)
 (ltd-fn  min                     min)
 (ltd-fn  +                       #'cvt-to-binary)
@@ -393,7 +393,7 @@
 (ltd-fn  caddr                   third)
 (ltd-fn  cons                    pair)
 (ltd-fn (endp l)                 `(not (pair? ,l)))
-(ltd-fn  list-length             size) 
+(ltd-fn  list-length             size)
 (ltd-fn (nth i l)                `(element ,l ,i))
 (ltd-fn  first                   first)
 (ltd-fn  second                  second)
@@ -407,7 +407,7 @@
 (ltd-fn (tenth s)                `(element ,s 9))
 (ltd-fn  rest                    tail)
 (ltd-fn (nthcdr i l)             `(nth-tail ,l ,i))
-(ltd-fn (last s &opt n)          (once s `(copy-sequence 
+(ltd-fn (last s &opt n)          (once s `(copy-sequence
                                            ,s :start (- (size ,s) ,(ifd n n 1)))))
 (ltd-fn  list                    list)
 (ltd-fn (list* . arg*)           `(apply list . ,arg*))
@@ -619,102 +619,102 @@
 ;;;; UNIMPLEMENTED FUNCTIONS
 
 (ltd-unimplemented-functions
- adjust-array                 get-output-stream-string     pprint-indent 
- applyhook                    get-properties               pprint-linear 
- apropos                      get-setf-method              pprint-newline pprint-pop 
- apropos-list                 get-setf-method-multiple-value pprint-tab 
- arithmetic-error-operands    get-universal-time           pprint-tabular 
- arithmetic-error-operation   handler-bind handler-case     
- array-row-major-index        hash-table-rehash-size       prin1-to-string 
- augment-environment          hash-table-rehash-threshold   
- bit-and                      host-namestring              princ-to-string 
- bit-andc1                    import                        
- bit-andc2                                                 probe-file 
- bit-eqv                      input-stream-p               progv 
- bit-ior                      inspect                      provide 
- bit-nand                     integer-decode-float          
- bit-nor                      integer-length               random-state-p 
- bit-not                      interactive-stream-p         rassoc 
- bit-orc1                     invalid-method-error         rassoc-if 
- bit-orc2                     invoke-debugger              rassoc-if-not 
- bit-xor                      invoke-restart               read 
- boole                        invoke-restart-interactively read-char-no-hang 
- boundp                       ldb                          read-delimited-list 
- broadcast-stream-streams     ldb-test                     read-from-string 
- byte                         ldiff                        read-preserving-whitespace 
- byte-position                lisp-implementation-type     readtable-case 
- byte-size                    lisp-implementation-version  readtablep 
- cell-error-name              list-all-packages 
- char-bit                     listen                       rename-file 
- char-bits                    load                         rename-package 
- char-font                    load-logical-pathname-translations require 
- char-name                    logandc1                     restart-bind 
- cis                          logandc2                     restart-case 
- clear-input                  logcount                     restart-name 
- compile                      logical-pathname             room 
- compile-file                 logical-pathname-translations row-major-aref 
- compile-file-pathname        logtest                      scale-float 
-                              long-site-name               set 
+ adjust-array                 get-output-stream-string     pprint-indent
+ applyhook                    get-properties               pprint-linear
+ apropos                      get-setf-method              pprint-newline pprint-pop
+ apropos-list                 get-setf-method-multiple-value pprint-tab
+ arithmetic-error-operands    get-universal-time           pprint-tabular
+ arithmetic-error-operation   handler-bind handler-case
+ array-row-major-index        hash-table-rehash-size       prin1-to-string
+ augment-environment          hash-table-rehash-threshold
+ bit-and                      host-namestring              princ-to-string
+ bit-andc1                    import
+ bit-andc2                                                 probe-file
+ bit-eqv                      input-stream-p               progv
+ bit-ior                      inspect                      provide
+ bit-nand                     integer-decode-float
+ bit-nor                      integer-length               random-state-p
+ bit-not                      interactive-stream-p         rassoc
+ bit-orc1                     invalid-method-error         rassoc-if
+ bit-orc2                     invoke-debugger              rassoc-if-not
+ bit-xor                      invoke-restart               read
+ boole                        invoke-restart-interactively read-char-no-hang
+ boundp                       ldb                          read-delimited-list
+ broadcast-stream-streams     ldb-test                     read-from-string
+ byte                         ldiff                        read-preserving-whitespace
+ byte-position                lisp-implementation-type     readtable-case
+ byte-size                    lisp-implementation-version  readtablep
+ cell-error-name              list-all-packages
+ char-bit                     listen                       rename-file
+ char-bits                    load                         rename-package
+ char-font                    load-logical-pathname-translations require
+ char-name                    logandc1                     restart-bind
+ cis                          logandc2                     restart-case
+ clear-input                  logcount                     restart-name
+ compile                      logical-pathname             room
+ compile-file                 logical-pathname-translations row-major-aref
+ compile-file-pathname        logtest                      scale-float
+                              long-site-name               set
                               loop-finish
- compiler-macro-function      machine-instance             set-char-bit 
- compiler-macroexpand         machine-type                  
- compiler-macroexpand-1       machine-version              set-dispacth-macro-character 
- complex                      macro-function               set-exclusive-or 
- compute-restarts             macroexpand                  set-macro-character 
- concatenated-stream-streams  macroexpand-1                set-pprint-dispatch 
- conjugate                    macrolet                     set-syntax-from-char 
-                              make-broadcast-stream        shadow 
- continue                     make-char                    shadowing-import 
- copy-pprint-dispatch         make-concatenated-stream     short-site-name 
- copy-readtable               make-dispatch-macro-character simple-bit-vector-p 
- copy-symbol                  make-echo-stream             simple-condition-format-arguments 
- copy-tree                    make-load-form-saving-slots  simple-condition-format-string 
- declaration-information      make-package                 sleep 
- decode-float                 make-pathname                slot-exists-p 
- decode-universal-time        make-random-state            slot-makunbound 
- delete-package               make-string-input-stream     software-type 
- deposit-field                make-string-output-stream    software-version 
- describe                     make-synonym-stream          special-form-p 
- directory                    make-two-way-stream          step 
- directory-namestring         makunbound                   store-value 
- disassemble                  mapl                         stream-error-stream 
- documentation                maplist                      stream-external-format 
- dpb                          mask                          
- dribble                      mask-field                    
- echo-stream-input-stream     merge-pathnames              
- echo-stream-output-stream    method-combination-error     subst-if 
- ed                           muffle-warning               subst-if-not 
- enclose                      name-char                    
- encode-universal-time        namestring                   symbol-package 
- enough-namestring            ensure-generic-function                    
- eval                         nset-exclusive-or            synonym-stream-symbol 
- evalhook                     nset-exclusive-or            tailp 
-                                                           time 
- fboundp                                                   trace 
- fdefinition                  nsubst-if                    translate-logical-pathname 
- file-author                  nsubst-if-not                translate-pathname 
- file-error-pathname          output-stream-p              tree-equal 
- file-length                  package-error-package        truename 
- file-namestring              package-name                 two-way-stream-input-stream 
- file-string-length           package-nicknames            two-way-stream-output-stream 
- file-write-date              package-shadowing-symbols    type-error-datum 
- find-all-symbols             package-use-list             type-error-expected-type 
- find-all-symbols             package-used-by-list         unexport 
- find-package                 packagep                     unintern 
- find-restart                 parse-integer                unuse-package 
- find-symbol                  parse-macro                  upgraded-array-element-type 
- float-digits                 parse-namestring             upgraded-complex-part-type 
- float-precision              pathname                     use-package 
- float-radix                  pathname-device              use-value 
- float-sign                   pathname-directory           user-homedir-pathname 
- fmakunbound                  pathname-host                variable-information 
- function-information         pathname-match-p              
- function-lambda-expression   pathname-name                wild-pathname-p 
-                              pathname-type                with-added-methods 
-                              pathname-version             
-                              pathnamep                    
- get-decoded-time             phase                        write-to-string 
- get-dispatch-macro-character pprint-exit-if-list-exhausted y-or-n-p 
- get-internal-run-time        pprint-dispatch              yes-or-no-p 
- get-macro-character          pprint-fill 
-) 
+ compiler-macro-function      machine-instance             set-char-bit
+ compiler-macroexpand         machine-type
+ compiler-macroexpand-1       machine-version              set-dispacth-macro-character
+ complex                      macro-function               set-exclusive-or
+ compute-restarts             macroexpand                  set-macro-character
+ concatenated-stream-streams  macroexpand-1                set-pprint-dispatch
+ conjugate                    macrolet                     set-syntax-from-char
+                              make-broadcast-stream        shadow
+ continue                     make-char                    shadowing-import
+ copy-pprint-dispatch         make-concatenated-stream     short-site-name
+ copy-readtable               make-dispatch-macro-character simple-bit-vector-p
+ copy-symbol                  make-echo-stream             simple-condition-format-arguments
+ copy-tree                    make-load-form-saving-slots  simple-condition-format-string
+ declaration-information      make-package                 sleep
+ decode-float                 make-pathname                slot-exists-p
+ decode-universal-time        make-random-state            slot-makunbound
+ delete-package               make-string-input-stream     software-type
+ deposit-field                make-string-output-stream    software-version
+ describe                     make-synonym-stream          special-form-p
+ directory                    make-two-way-stream          step
+ directory-namestring         makunbound                   store-value
+ disassemble                  mapl                         stream-error-stream
+ documentation                maplist                      stream-external-format
+ dpb                          mask
+ dribble                      mask-field
+ echo-stream-input-stream     merge-pathnames
+ echo-stream-output-stream    method-combination-error     subst-if
+ ed                           muffle-warning               subst-if-not
+ enclose                      name-char
+ encode-universal-time        namestring                   symbol-package
+ enough-namestring            ensure-generic-function
+ eval                         nset-exclusive-or            synonym-stream-symbol
+ evalhook                     nset-exclusive-or            tailp
+                                                           time
+ fboundp                                                   trace
+ fdefinition                  nsubst-if                    translate-logical-pathname
+ file-author                  nsubst-if-not                translate-pathname
+ file-error-pathname          output-stream-p              tree-equal
+ file-length                  package-error-package        truename
+ file-namestring              package-name                 two-way-stream-input-stream
+ file-string-length           package-nicknames            two-way-stream-output-stream
+ file-write-date              package-shadowing-symbols    type-error-datum
+ find-all-symbols             package-use-list             type-error-expected-type
+ find-all-symbols             package-used-by-list         unexport
+ find-package                 packagep                     unintern
+ find-restart                 parse-integer                unuse-package
+ find-symbol                  parse-macro                  upgraded-array-element-type
+ float-digits                 parse-namestring             upgraded-complex-part-type
+ float-precision              pathname                     use-package
+ float-radix                  pathname-device              use-value
+ float-sign                   pathname-directory           user-homedir-pathname
+ fmakunbound                  pathname-host                variable-information
+ function-information         pathname-match-p
+ function-lambda-expression   pathname-name                wild-pathname-p
+                              pathname-type                with-added-methods
+                              pathname-version
+                              pathnamep
+ get-decoded-time             phase                        write-to-string
+ get-dispatch-macro-character pprint-exit-if-list-exhausted y-or-n-p
+ get-internal-run-time        pprint-dispatch              yes-or-no-p
+ get-macro-character          pprint-fill
+)
