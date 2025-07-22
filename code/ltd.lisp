@@ -162,9 +162,9 @@
           ((and con (functionp con)) (funcall con))
           ((starts-with str #\$) var)
           ((bracketed-with str #\*)
-           (mksymbol '$ (subseq str 1 (- (length str)))))
+           (mksymbol '$ (subseq str 1 (- (length str) 1))))
           ((bracketed-with str #\+)
-           (mksymbol '$ (subseq str 1 (- (length str)))))
+           (mksymbol '$ (subseq str 1 (- (length str) 1))))
           (t (mksymbol '$ var)))))
 
 (defun extract-declarations (body)
