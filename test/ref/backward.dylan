@@ -71,8 +71,7 @@ define method match-pattern-to-assertions (pattern, bindings)
   // 		one binding list.
   //
   stream-concatenate(stream-transform(method (assertion)
-                                        try-assertion(pattern,
-                                                      assertion,
+                                        try-assertion(pattern, assertion,
                                                       bindings);
                                       end method,
                                       *assertions*));
@@ -204,23 +203,17 @@ define method make-variables-unique (rule)
   let unique-variables
       = // Make substitution list:
       map(method (variable)
-            let input
-                = // LTD: Function MAKE-STRING-INPUT-STREAM not yet implemented.
-                  make-string-input-stream(format(#f,
-                                                  "%c-%S",
-                                                  format(#f,
-                                                         "%S",
-                                                         variable)[0],
-                                                  inc!(*name-counter*)),
-                                           0);
-            block (nil)
-              begin
-                // LTD: Function READ not yet implemented.
-                read(input);
-              end;
-            cleanup
-              close(input);
-            end block;
+            // Generate a new name, based on first character of
+            // the given variable, plus a unique number; I could
+            // have used GENSYM, but this approach makes it easier
+            // to test the code on a variety of Lisp systems:
+            with-input-from-string (input
+                                     = (format(#f, "%c-%S",
+                                               format(#f, "%S", variable)[0],
+                                                                          inc!(*name-counter*))))
+              // LTD: Function READ not yet implemented.
+              read(input);
+            end with-input-from-string;
           end method,
           variables);
   instantiate-variables(rule, // Make binding list:

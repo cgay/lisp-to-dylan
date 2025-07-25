@@ -781,8 +781,20 @@
         (let ((n (position :stream keys :key #'strip)))
           (if n
               (append (subseq keys 0 n) (subseq keys (+ n 2)))
-            keys))))
+              keys))))
 
+(defun cvt-with-input-from-string (exp)
+  (must-be-call
+   (destructuring-bind ((var string . options) . body) (args exp)
+     `(with-input-from-string (= ,(cvt-exp var)
+                                 (:args ,(cvt-exp string) ,@(cvt-exps options)))
+       ,@(cvt-body body)))))
+
+(defun cvt-with-output-to-string (exp)
+  (must-be-call
+   (destructuring-bind ((var) . body) (args exp)
+     `(with-output-to-string ,(cvt-exp var)
+       ,@(cvt-body body)))))
 
 ;;;; CLtL2 CH 23: FILE SYSTEM INTERFACE
 

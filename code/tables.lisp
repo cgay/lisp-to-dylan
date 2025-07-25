@@ -546,6 +546,8 @@
 (ltd-fn (force-output &opt stdout)    `(force-output ,stdout))
 (ltd-fn (clear-output &opt stdout)    `(discard-output ,stdout))
 (ltd-fn format                        #'cvt-format)
+(ltd-fn with-input-from-string        #'cvt-with-input-from-string)
+(ltd-fn with-output-to-string         #'cvt-with-output-to-string)
 
 ;;;; CLtL2 CH 23: FILE SYSTEM INTERFACE
 

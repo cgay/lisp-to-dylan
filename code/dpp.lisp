@@ -96,6 +96,8 @@
 (dpp (until)          #'dpp-conditional)
 (dpp (while)          #'dpp-conditional)
 (dpp (with-open-file) #'dpp-conditional)
+(dpp (with-input-from-string) #'dpp-conditional)
+(dpp (with-output-to-string)  #'dpp-conditional)
 
 ;;;; PRETTY-PRINTERS FOR SYNTACTIC COMPONENTS
 
