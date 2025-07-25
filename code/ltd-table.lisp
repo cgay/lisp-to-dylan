@@ -629,7 +629,7 @@
     (let ((starts (if (getf keys start) `(:start ,(cvt-exp  (getf keys start)))))
           (ends (if (getf keys end) `(:end ,(cvt-exp  (getf keys end))))))
       (if (or starts ends)
-          `(copy-subsequence ,sequence ,@starts ,@ends)
+          `(copy-sequence ,sequence ,@starts ,@ends)
           sequence))))
 
 (defun mkcount (keys)

@@ -260,7 +260,7 @@ will be translated by LTD to
 
 .. code:: dylan
 
-   remove!(item, copy-subsequence(seq, start: n),
+   remove!(item, copy-sequence(seq, start: n),
            test: method (x, y)
                    (complement(my=))(x, slot1(y));
                  end)
