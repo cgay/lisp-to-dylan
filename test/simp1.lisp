@@ -51,7 +51,7 @@
 ;; useful for integration variable, for example.
 ;; Do this before any other use of the symbol z.
 
-(defun make-main-var (z &optional (place #.most-positive-fixnum))
+(defun make-main-var (z &optional (place cl:most-positive-fixnum))
   (cond ((gethash z vartab) 
 	 (if (not (eq z (gethash place revtab)))
 		  (format t "~% ~s already is a variable with a different order;
